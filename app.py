@@ -1,18 +1,17 @@
-from flask import Flask, request, jsonify
+def search_drive(company_name):
+    folder_results = drive_service.files().list(
+        q=f"'{PARENT_FOLDER_ID}' in parents and mimeType='application/vnd.google-apps.folder' and name contains '{company_name}'",
+        fields="files(id, name)").execute()
+    folders = folder_results.get('files', [])
 
-app = Flask(__name__)
+    if not folders:
+        return []
 
-@app.route("/slack", methods=["POST"])
-def handle_slash_command():
-    data = request.form
-    company_name = data.get("text")
+    folder_id = folders[0]['id']
 
-    response_text = f"🔍 会社名「{company_name}」で検索します！（ここにDrive検索結果が入ります）"
+    sheet_results = drive_service.files().list(
+        q=f"'{folder_id}' in parents and mimeType='application/vnd.google-apps.spreadsheet' and name contains 'キックオフ資料'",
+        fields="files(id, name)").execute()
 
-    return jsonify({
-        "response_type": "in_channel",
-        "text": response_text
-    })
-
-if __name__ == "__main__":
-    app.run(port=5000)
+    sheets = sheet_results.get('files', [])
+    return [f"https://docs.google.com/spreadsheets/d/{f['id']}" for f in sheets]
