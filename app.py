@@ -10,7 +10,7 @@ def search_drive(company_name):
     folder_id = folders[0]['id']
 
     sheet_results = drive_service.files().list(
-        q=f"'{folder_id}' in parents and mimeType='application/vnd.google-apps.spreadsheet' and name contains 'キックオフ資料'",
+        q=f"'{folder_id}' in parents and mimeType='application/vnd.google-apps.spreadsheet' and name contains 'キックオフ'",
         fields="files(id, name)").execute()
 
     sheets = sheet_results.get('files', [])
