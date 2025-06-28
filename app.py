@@ -15,3 +15,10 @@ def search_drive(company_name):
 
     sheets = sheet_results.get('files', [])
     return [f"https://docs.google.com/spreadsheets/d/{f['id']}" for f in sheets]
+
+import os
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
+
